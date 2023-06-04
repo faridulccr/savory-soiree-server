@@ -2,15 +2,7 @@
 const express = require("express");
 const cors = require("cors");
 const { MongoClient, ServerApiVersion } = require("mongodb");
-const {
-    getAllProducts,
-    getSingleProduct,
-    findProductByEmail,
-    findProductByCategory,
-    createProduct,
-    updateProduct,
-    deleteProduct,
-} = require("./controllers/product.controller");
+const { getAllMenu } = require("./controllers/menu.controller");
 
 // create express server
 const app = express();
@@ -32,46 +24,46 @@ async function run() {
         // Connect the client to the server	(optional starting in v4.7)
         // await client.connect();
         client.connect();
-        // create a collection for products in myDB
-        const productsCollection = client.db("myDB").collection("products");
+        // create a collection for menu in SavoryDB
+        const menuCollection = client.db("SavoryDB").collection("menu");
 
-        // get all products
+        // welcome message
         app.get("/", (req, res) => {
             res.status(200).json({ message: "welcome to server" });
         });
 
-        // get all products
-        app.get("/api/products", getAllProducts(productsCollection));
+        // get all menu
+        app.get("/api/menu", getAllMenu(menuCollection));
 
-        // get single product
-        app.get(
-            "/api/single-product/:id",
-            getSingleProduct(productsCollection)
-        );
+        // // get single product
+        // app.get(
+        //     "/api/single-product/:id",
+        //     getSingleProduct(productsCollection)
+        // );
 
-        // find product by email
-        app.get(
-            "/api/user-products/:email",
-            findProductByEmail(productsCollection)
-        );
+        // // find product by email
+        // app.get(
+        //     "/api/user-products/:email",
+        //     findProductByEmail(productsCollection)
+        // );
 
-        // find product by category
-        app.get(
-            "/api/product-category",
-            findProductByCategory(productsCollection)
-        );
+        // // find product by category
+        // app.get(
+        //     "/api/product-category",
+        //     findProductByCategory(productsCollection)
+        // );
 
-        // create product
-        app.post("/api/create-product", createProduct(productsCollection));
+        // // create product
+        // app.post("/api/create-product", createProduct(productsCollection));
 
-        // update product
-        app.put("/api/update-product/:id", updateProduct(productsCollection));
+        // // update product
+        // app.put("/api/update-product/:id", updateProduct(productsCollection));
 
-        // delete product
-        app.delete(
-            "/api/delete-product/:id",
-            deleteProduct(productsCollection)
-        );
+        // // delete product
+        // app.delete(
+        //     "/api/delete-product/:id",
+        //     deleteProduct(productsCollection)
+        // );
 
         // not found error handling
         app.use((req, res, next) => {
