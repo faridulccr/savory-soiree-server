@@ -2,7 +2,7 @@
 const express = require("express");
 const cors = require("cors");
 const { MongoClient, ServerApiVersion } = require("mongodb");
-const { getAllMenu } = require("./controllers/menu.controller");
+const { getAllMenu, getAllReview } = require("./controllers/menu.controller");
 
 // create express server
 const app = express();
@@ -26,6 +26,7 @@ async function run() {
         client.connect();
         // create a collection for menu in SavoryDB
         const menuCollection = client.db("SavoryDB").collection("menu");
+        const reviewCollection = client.db("SavoryDB").collection("review");
 
         // welcome message
         app.get("/", (req, res) => {
@@ -34,6 +35,9 @@ async function run() {
 
         // get all menu
         app.get("/api/menu", getAllMenu(menuCollection));
+
+        // get all reviews
+        app.get("/api/reviews", getAllReview(reviewCollection));
 
         // // get single product
         // app.get(
