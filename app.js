@@ -26,6 +26,8 @@ async function run() {
         client.connect();
         // create a collection for menu in SavoryDB
         const menuCollection = client.db("SavoryDB").collection("menu");
+
+        // create a collection for reviews in SavoryDB
         const reviewCollection = client.db("SavoryDB").collection("review");
 
         // welcome message
