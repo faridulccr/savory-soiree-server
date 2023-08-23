@@ -12,18 +12,6 @@ const getAllMenu = (menuCollection) => {
     };
 };
 
-// get all review
-const getAllReview = (reviewCollection) => {
-    return async (req, res) => {
-        const allReview = await reviewCollection.find().toArray();
-        // console.log(allReview);
-
-        allReview.length > 0
-            ? res.status(200).json(allReview)
-            : res.status(404).json({ error: "data not found" });
-    };
-};
-
 // get single product
 // const getSingleProduct = (products) => {
 //     return async (req, res) => {
@@ -119,5 +107,4 @@ const getAllReview = (reviewCollection) => {
 
 module.exports = {
     getAllMenu,
-    getAllReview,
 };

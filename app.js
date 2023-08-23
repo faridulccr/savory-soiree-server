@@ -2,7 +2,19 @@
 const express = require("express");
 const cors = require("cors");
 const { MongoClient, ServerApiVersion } = require("mongodb");
-const { getAllMenu, getAllReview } = require("./controllers/menu.controller");
+const { getAllMenu } = require("./controllers/menu.controller");
+const { getAllReview } = require("./controllers/review.controller");
+const {
+    getAllCarts,
+    addCart,
+    deleteCart,
+} = require("./controllers/cart.controller");
+const {
+    getAllUsers,
+    getSingleUser,
+    createUser,
+    deleteUser,
+} = require("./controllers/user.controller");
 
 // create express server
 const app = express();
@@ -21,55 +33,44 @@ const client = new MongoClient(process.env.DB_URL, {
 
 async function run() {
     try {
-        // Connect the client to the server	(optional starting in v4.7)
         // await client.connect();
         client.connect();
         // create a collection for menu in SavoryDB
         const menuCollection = client.db("SavoryDB").collection("menu");
 
         // create a collection for reviews in SavoryDB
-        const reviewCollection = client.db("SavoryDB").collection("review");
+        const reviewCollection = client.db("SavoryDB").collection("reviews");
+
+        // create a collection for carts in SavoryDB
+        const cartCollection = client.db("SavoryDB").collection("carts");
+
+        // create a collection for users in SavoryDB
+        const userCollection = client.db("SavoryDB").collection("users");
 
         // welcome message
         app.get("/", (req, res) => {
             res.status(200).json({ message: "welcome to server" });
         });
 
-        // get all menu
+        // Menu related apis
         app.get("/api/menu", getAllMenu(menuCollection));
 
-        // get all reviews
+        // Review related apis
         app.get("/api/reviews", getAllReview(reviewCollection));
 
-        // // get single product
-        // app.get(
-        //     "/api/single-product/:id",
-        //     getSingleProduct(productsCollection)
-        // );
+        // Cart related apis
+        app.post("/api/cart", addCart(cartCollection));
+        app.get("/api/carts/:email", getAllCarts(cartCollection));
+        app.delete("/api/carts/:id", deleteCart(cartCollection));
 
-        // // find product by email
-        // app.get(
-        //     "/api/user-products/:email",
-        //     findProductByEmail(productsCollection)
-        // );
-
-        // // find product by category
-        // app.get(
-        //     "/api/product-category",
-        //     findProductByCategory(productsCollection)
-        // );
-
-        // // create product
-        // app.post("/api/create-product", createProduct(productsCollection));
+        // Users related apis
+        app.get("/api/users", getAllUsers(userCollection));
+        app.get("/api/users/:email", getSingleUser(userCollection));
+        app.post("/api/users", createUser(userCollection));
+        app.delete("/api/users/:email", deleteUser(userCollection));
 
         // // update product
         // app.put("/api/update-product/:id", updateProduct(productsCollection));
-
-        // // delete product
-        // app.delete(
-        //     "/api/delete-product/:id",
-        //     deleteProduct(productsCollection)
-        // );
 
         // not found error handling
         app.use((req, res, next) => {
