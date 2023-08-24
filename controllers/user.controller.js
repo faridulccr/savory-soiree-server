@@ -14,10 +14,10 @@ const getAllUsers = (users) => {
 const getSingleUser = (users) => {
     return async (req, res) => {
         const { email } = req.params;
-        const user = await users.find({ email }).toArray();
+        const user = await users.findOne({ email });
         // console.log(user);
 
-        user.length > 0
+        user
             ? res.status(200).json(user)
             : res.status(404).json({ error: "data not found" });
     };
@@ -26,12 +26,18 @@ const getSingleUser = (users) => {
 // create a user to user collection
 const createUser = (users) => {
     return async (req, res) => {
-        const newUser = await users.insertOne(req.body);
-        // console.log(newUser);
-
-        newUser.acknowledged
-            ? res.status(200).json({ message: "user created successfully!" })
-            : res.status(400).json({ error: "Bad request!" });
+        const data = req.body;
+        // find the existing user
+        const user = await users.findOne({ email: data.email });
+        if (!user) {
+            const newUser = await users.insertOne(data);
+            // console.log(newUser);
+            newUser.acknowledged
+                ? res
+                      .status(200)
+                      .json({ message: "user created successfully!" })
+                : res.status(400).json({ error: "Server error!" });
+        } else res.status(400).json({ error: "User is already exist!" });
     };
 };
 
