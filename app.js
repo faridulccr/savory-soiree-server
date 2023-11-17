@@ -13,6 +13,7 @@ const {
     getAllUsers,
     getSingleUser,
     createUser,
+    updateUserRole,
     deleteUser,
 } = require("./controllers/user.controller");
 
@@ -65,9 +66,13 @@ async function run() {
 
         // Users related apis
         app.get("/api/users", getAllUsers(userCollection));
-        app.get("/api/users/:email", getSingleUser(userCollection));
-        app.post("/api/users", createUser(userCollection));
-        app.delete("/api/users/:email", deleteUser(userCollection));
+        app.get("/api/user/:email", getSingleUser(userCollection));
+        app.post("/api/user", createUser(userCollection));
+        app.patch(
+            "/api/admin/update-user-role/:email",
+            updateUserRole(userCollection)
+        );
+        app.delete("/api/user/:email", deleteUser(userCollection));
 
         // // update product
         // app.put("/api/update-product/:id", updateProduct(productsCollection));

@@ -1,4 +1,4 @@
-// get all carts
+// get all users
 const getAllUsers = (users) => {
     return async (req, res) => {
         const allUsers = await users.find().toArray();
@@ -41,10 +41,26 @@ const createUser = (users) => {
     };
 };
 
+// update user role
+const updateUserRole = (users) => {
+    return async (req, res) => {
+        const { email } = req.params;
+        const updatedUser = await users.updateOne(
+            { email },
+            { $set: { role: "admin" } }
+        );
+        // console.log(updatedUser);
+
+        updatedUser.acknowledged
+            ? res.status(200).json({ message: "successfully updated" })
+            : res.status(400).json({ error: "Bad Request" });
+    };
+};
+
 // delete user
 const deleteUser = (users) => {
     return async (req, res) => {
-        const deletedUser = await users.deleteOne({ _id: req.params.email });
+        const deletedUser = await users.deleteOne({ email: req.params.email });
         // console.log(deletedUser);
 
         deletedUser.acknowledged
@@ -57,5 +73,6 @@ module.exports = {
     getAllUsers,
     getSingleUser,
     createUser,
+    updateUserRole,
     deleteUser,
 };
